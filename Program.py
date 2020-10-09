@@ -1,22 +1,17 @@
 import re
-import csv
 
+f = open ('steam_description_data.csv', encoding='utf-8')
 characters = 0
 spaces = 0
 punctuation = 0
 words = 0
 sentences = 0
-with open('steam_description_data.csv', encoding='utf-8') as f:
-    reader = csv.reader(f)
-    for row in reader:
-        line = ','.join(row)
+for line in f:
         characters += len(line)
         spaces += line.count(' ')
-        punctuation += line.count('.') + line.count(',') + line.count('?') + line.count('!') + line.count(
-            '\'') + line.count('\"') + line.count(';') + line.count(':') + line.count('-') + line.count('(') + line.count(')')
-        words += len(line.split()) + len(line.split('.')) + len(line.split(',')) + len(line.split('?')) + len(line.split('!')) + len(line.split('\'')) + \
-            len(line.split('\"')) + len(line.split(';')) + len(line.split(':')) + \
-            len(line.split('-')) + len(line.split('(')) + len(line.split(')'))
+        for i in '.,!?\"\';:-()':
+            punctuation += line.count(i)
+        words += len(re.findall(r"(\w+'\w+)|(\w+-\w+'\w+)|(\w+-\w+'\w)|\w+", line))
         sentences += len(re.findall(r"([A-Z][^\.!?]*[\.!?])", line))
 print('Общее количество символов:', characters)
 print('Количество символов без пробелов:', characters - spaces)
